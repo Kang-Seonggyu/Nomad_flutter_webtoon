@@ -1,0 +1,5 @@
+{
+  "editor.codeActionsOnSave": {
+    "source.fixAll": "explicit" // 자동으로 코드 수정해 줌.
+  }
+}
