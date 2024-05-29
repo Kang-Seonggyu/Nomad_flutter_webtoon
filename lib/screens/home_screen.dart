@@ -5,7 +5,7 @@ import 'package:toonflix/services/api_service.dart';
 class HomeScreen extends StatelessWidget {
   HomeScreen({Key? key}) : super(key: key);
 
-  Future<List<WebtoonModel>> webtoons = APiService.getTodaysToon();
+  final Future<List<WebtoonModel>> webtoons = APiService.getTodaysToon();
 
   @override
   Widget build(BuildContext context) {
@@ -22,12 +22,24 @@ class HomeScreen extends StatelessWidget {
       ),
       body: FutureBuilder(
         future: webtoons,
-        builder: (context, snapshot) {
-          // snapshot은 future. 여기선 webtoons의 상태
+        builder: (context, AsyncSnapshot snapshot) {
           if (snapshot.hasData) {
-            return const Text("There is Data!");
+            return ListView.separated(
+              // 그냥 ListView를 사용하는 것과는 다르게 builder는 최적화 해줌(보이는 화면만 렌더링)
+              // separted는 gap에 widget을 추가하여 렌더링 가능.
+              scrollDirection: Axis.horizontal,
+              itemCount: snapshot.data!.length,
+              itemBuilder: (context, index) {
+                print(index);
+                var webtoon = snapshot.data![index];
+                return Text(webtoon.title);
+              },
+              separatorBuilder: (context, index) => const SizedBox(width: 20),
+            );
           }
-          return const Text("Loading...");
+          return const Center(
+            child: CircularProgressIndicator(),
+          );
         },
       ),
     );
